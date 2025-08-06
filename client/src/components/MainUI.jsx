@@ -11,9 +11,6 @@ function MainUI() {
 				const encrypted = await window.electronAPI.cryptoOp('ENCRYPT', 'hello');
 				console.log('Encrypted (raw buffer or bytes):', encrypted);
 
-				// NOTE: Right now, your C server sends back raw bytes — you might want to base64 encode
-				// them in C before sending to make printing/logging easier.
-
 				// Decrypt
 				const decrypted = await window.electronAPI.cryptoOp('DECRYPT', encrypted);
 				console.log('Decrypted:', decrypted);

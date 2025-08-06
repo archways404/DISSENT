@@ -8,7 +8,7 @@ function ConfigCheck() {
 		async function check() {
 			const exists = await window.electronAPI.checkConfig();
 			setConfigExists(exists);
-			setRenderState(exists ? 'unlock' : 'setup'); // ask for passphrase if file exists
+			setRenderState(exists ? 'unlock' : 'setup');
 		}
 		check();
 	}, [setConfigExists, setRenderState]);

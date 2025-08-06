@@ -1,17 +1,12 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogDescription,
-	DialogFooter,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
+import { Lock } from 'lucide-react';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+
 import useAppStore from '../store';
 
-function Unlock() {
+export default function Unlock() {
 	const setRenderState = useAppStore((state) => state.setRenderState);
 	const [pass, setPass] = useState('');
 	const [error, setError] = useState('');
@@ -30,27 +25,45 @@ function Unlock() {
 	}
 
 	return (
-		<div>
-			<Dialog open={true}>
-				<DialogContent className="sm:max-w-md">
-					<DialogHeader>
-						<DialogTitle>LOCKED</DialogTitle>
-						<DialogDescription>Enter your passphrase to unlock.</DialogDescription>
-					</DialogHeader>
+		<Dialog open={true}>
+			<DialogContent
+				className="max-w-md w-full bg-background py-12 px-8 rounded-lg shadow-lg border border-border backdrop-blur-md"
+				showCloseButton={false}>
+				<DialogHeader className="w-full text-center">
+					<div className="flex justify-center mb-6">
+						<Lock
+							size={40}
+							className="text-primary"
+						/>
+					</div>
+				</DialogHeader>
+
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						handleUnlock();
+					}}
+					className="flex flex-col items-center gap-4">
 					<Input
 						type="password"
 						placeholder="Enter passphrase"
 						value={pass}
 						onChange={(e) => setPass(e.target.value)}
+						className="w-1/2 text-left text-base p-3 rounded-md border border-input focus:ring-2 focus:ring-primary"
+						autoFocus
 					/>
-					<DialogFooter>
-						<Button onClick={handleUnlock}>Unlock</Button>
-						{error && <p className="text-red-500">{error}</p>}
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
-		</div>
+					{error && (
+						<HoverCard>
+							<HoverCardTrigger asChild>
+								<p className="text-red-500 text-sm text-center cursor-help">Unlock failed</p>
+							</HoverCardTrigger>
+							<HoverCardContent className="max-w-xs break-words">
+								<p>{error}</p>
+							</HoverCardContent>
+						</HoverCard>
+					)}
+				</form>
+			</DialogContent>
+		</Dialog>
 	);
 }
-
-export default Unlock;

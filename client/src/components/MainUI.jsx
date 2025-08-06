@@ -1,7 +1,29 @@
+import { useEffect } from 'react';
 import useAppStore from '../store';
 
 function MainUI() {
 	const renderState = useAppStore((state) => state.renderState);
+
+	useEffect(() => {
+		async function runTest() {
+			try {
+				// Encrypt
+				const encrypted = await window.electronAPI.cryptoOp('ENCRYPT', 'hello');
+				console.log('Encrypted (raw buffer or bytes):', encrypted);
+
+				// NOTE: Right now, your C server sends back raw bytes — you might want to base64 encode
+				// them in C before sending to make printing/logging easier.
+
+				// Decrypt
+				const decrypted = await window.electronAPI.cryptoOp('DECRYPT', encrypted);
+				console.log('Decrypted:', decrypted);
+			} catch (err) {
+				console.error('Crypto test failed:', err);
+			}
+		}
+
+		runTest();
+	}, []);
 
 	return (
 		<div>

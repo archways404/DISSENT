@@ -4,6 +4,10 @@ import fs from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
+import net from 'net';
+
+let cServerProc = null;
+const socketPath = '/tmp/protectu84.sock';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -97,50 +101,54 @@ ipcMain.handle('create-config-with-pass', async (event, passphrase) => {
 ipcMain.handle('unlock-config', async (event, passphrase) => {
 	return new Promise((resolve, reject) => {
 		const cPath = path.join(__dirname, '../bin/config_reader');
+		cServerProc = spawn(cPath, ['--server', configPath]);
 
-		const proc = spawn(cPath, [configPath]);
+		let ready = false;
 
-		let output = '';
-		let errOutput = '';
-
-		proc.stdout.on('data', (data) => {
-			console.log('[config_reader stdout]', data.toString());
-			output += data.toString();
-		});
-
-		proc.stderr.on('data', (data) => {
-			console.error('[config_reader stderr]', data.toString());
-			errOutput += data.toString();
-		});
-
-		proc.on('close', (code) => {
-			if (code === 0) {
-				resolve(output.trim());
-			} else {
-				reject(errOutput || `Exited with code ${code}`);
+		cServerProc.stdout.on('data', (data) => {
+			const msg = data.toString().trim();
+			console.log('[C server]', msg);
+			if (msg === 'READY') {
+				ready = true;
+				resolve('unlocked');
 			}
 		});
 
-		// Send passphrase directly to C program
-		proc.stdin.write(passphrase);
-		proc.stdin.end();
+		cServerProc.stderr.on('data', (data) => {
+			console.error('[C server stderr]', data.toString());
+			if (!ready) reject(data.toString());
+		});
+
+		cServerProc.on('close', (code) => {
+			console.log(`C server exited with code ${code}`);
+		});
+
+		// Send passphrase to C process
+		cServerProc.stdin.write(passphrase + '\n');
 	});
 });
 
-app.whenReady().then(createWindow);
-/*
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+ipcMain.handle('crypto-op', async (event, op, payload) => {
+	return new Promise((resolve, reject) => {
+		const client = net.createConnection(socketPath, () => {
+			client.write(`${op} ${payload}\n`);
+		});
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+		let response = '';
+		client.on('data', (data) => {
+			response += data.toString();
+		});
 
-const configPath = path.join(app.getPath('userData'), 'config.enc');
+		client.on('end', () => {
+			resolve(response.trim());
+		});
 
-ipcMain.handle('check-config', async () => {
-  return fs.existsSync(configPath);
+		client.on('error', (err) => reject(err));
+	});
 });
 
-*/
+app.on('will-quit', () => {
+	if (cServerProc) cServerProc.kill('SIGTERM');
+});
+
+app.whenReady().then(createWindow);

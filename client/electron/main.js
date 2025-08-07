@@ -3,18 +3,17 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
-import net from 'net';
-
-let cServerProc = null;
-const socketPath = '/tmp/protectu84.sock';
+import { decryptConfig } from './func/decryptConfig.js';
+import { encryptConfig } from './func/encryptConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Central config path
 const configDir = path.join(__dirname, '../config');
-const configPath = path.join(configDir, 'cfg.enc');
+const configPath = path.join(configDir, 'cfg.json');
+
+let inMemoryPassphrase = null;
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -73,23 +72,26 @@ ipcMain.handle('create-config-with-pass', async (event, passphrase) => {
 			fs.mkdirSync(configDir, { recursive: true });
 		}
 
-		// Example: Generate a random 32-byte identifier
-		const identifier = crypto.randomBytes(32).toString('hex');
+		inMemoryPassphrase = passphrase;
 
-		// Derive a key from the passphrase
-		const salt = crypto.randomBytes(16);
-		const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');
+		const config = {
+			settings: {
+				failed_decrypt: '0',
+				failed_nuke: '10',
+			},
+			'conversation-uuid': {
+				seed: 'abc',
+				'random-start-index': '123',
+				'random-index-increment': '7',
+				'base-delay': '2h',
+			},
+		};
 
-		// Encrypt the identifier
-		const iv = crypto.randomBytes(16);
-		const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-		let encrypted = cipher.update(identifier, 'utf8', 'hex');
-		encrypted += cipher.final('hex');
-		const authTag = cipher.getAuthTag();
+		encryptConfig(config, inMemoryPassphrase, configPath);
+		console.log('Encrypted and saved.');
 
-		// File structure: salt|iv|tag|ciphertext (all hex)
-		const fileData = Buffer.concat([salt, iv, authTag, Buffer.from(encrypted, 'hex')]);
-		fs.writeFileSync(configPath, fileData);
+		const decrypted = decryptConfig(configPath, inMemoryPassphrase);
+		console.log('Decrypted:', decrypted);
 
 		return true;
 	} catch (err) {
@@ -99,56 +101,57 @@ ipcMain.handle('create-config-with-pass', async (event, passphrase) => {
 });
 
 ipcMain.handle('unlock-config', async (event, passphrase) => {
-	return new Promise((resolve, reject) => {
-		const cPath = path.join(__dirname, '../bin/config_reader');
-		cServerProc = spawn(cPath, ['--server', configPath]);
+	if (!passphrase || passphrase.length < 4) {
+		throw new Error('Passphrase too short');
+	}
 
-		let ready = false;
+	inMemoryPassphrase = passphrase;
+	console.log('[MEMORY] Config passphrase stored in memory.');
 
-		cServerProc.stdout.on('data', (data) => {
-			const msg = data.toString().trim();
-			console.log('[C server]', msg);
-			if (msg === 'READY') {
-				ready = true;
-				resolve('unlocked');
-			}
-		});
-
-		cServerProc.stderr.on('data', (data) => {
-			console.error('[C server stderr]', data.toString());
-			if (!ready) reject(data.toString());
-		});
-
-		cServerProc.on('close', (code) => {
-			console.log(`C server exited with code ${code}`);
-		});
-
-		// Send passphrase to C process
-		cServerProc.stdin.write(passphrase + '\n');
-	});
+	return true;
 });
 
-ipcMain.handle('crypto-op', async (event, op, payload) => {
-	return new Promise((resolve, reject) => {
-		const client = net.createConnection(socketPath, () => {
-			client.write(`${op} ${payload}\n`);
-		});
+ipcMain.handle('get-decrypted-config', async () => {
+	if (!inMemoryPassphrase) {
+		throw new Error('No passphrase in memory.');
+	}
 
-		let response = '';
-		client.on('data', (data) => {
-			response += data.toString();
-		});
-
-		client.on('end', () => {
-			resolve(response.trim());
-		});
-
-		client.on('error', (err) => reject(err));
-	});
+	try {
+		const config = decryptConfig(configPath, inMemoryPassphrase);
+		return config;
+	} catch (err) {
+		console.error('Decryption failed:', err);
+		throw err;
+	}
 });
 
-app.on('will-quit', () => {
-	if (cServerProc) cServerProc.kill('SIGTERM');
+ipcMain.handle('lock-config', async () => {
+	await theGreatWall();
+});
+
+async function theGreatWall() {
+	if (inMemoryPassphrase) {
+		const overwrite = 'x'.repeat(inMemoryPassphrase.length);
+		inMemoryPassphrase = overwrite; // overwrite old value
+	}
+	inMemoryPassphrase = null;
+
+	global.gc?.();
+	console.log('[MEMORY] Config passphrase cleared from memory.');
+}
+
+/*
+let autoLockTimer = null;
+
+function scheduleAutoLock(ms = 5 * 60 * 1000) {
+	// 5 minutes
+	if (autoLockTimer) clearTimeout(autoLockTimer);
+	autoLockTimer = setTimeout(theGreatWall, ms);
+}
+*/
+
+app.on('will-quit', async () => {
+	await theGreatWall();
 });
 
 app.whenReady().then(createWindow);

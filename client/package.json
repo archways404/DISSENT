@@ -6,6 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+		"dev2": "cross-env NODE_ENV=development concurrently \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_OPTIONS=--expose-gc electron .\"",
 		"build": "vite build && electron-builder",
 		"start": "cross-env NODE_ENV=production electron .",
 		"lint": "eslint .",

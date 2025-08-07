@@ -1,0 +1,15 @@
+Client should be able to withstand memory attacks as well as not leak any secrets.
+
+Also it should wipe memory upon plugging in a device or w.e. (anti-forensics).
+
+CFG file brute force attacks should be mitigated by using a wipe logic that clears sensitive data after a certain number of failed attempts.
+
+Auto wipe memory after a certain period of inactivity.
+
+If usb device is unplugged = wipe memory?
+
+CFG file only decrypted on demand and immedietly encrypted again
+
+Messages should be encrypted with the following schema:
+
+KEY = SEED + RANDOM_START_INDEX + MESSAGE_INDEX (user A has even indexes, and user B has odd indexes)

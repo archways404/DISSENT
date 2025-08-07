@@ -1,0 +1,12 @@
+The client sends a message to around 5 servers (predefined list in the config which can be edited if needed) and waits for a response from each server. If a server does not respond within a certain timeout, it is considered offline.
+
+The servers should communicate with each other and keep a key value pair of active servers and inactive servers. New servers must let a "known" server know that they exist to be added to the list.
+
+The send message to the original 5 servers will span out where each server will send it to 5 other servers, and so on...
+
+Queue system for forwarding messages
+
+Batch inserting messages into local SQLite DB
+
+
+

@@ -1,10 +1,11 @@
 # DISSENT
 
-> **Decentralized Infrastructure for Secure Speech and Encryption Network against Totalitarianism**
+> **D**ecentralized **I**nfrastructure for **S**ecure **S**peech and **E**ncryption **N**etwork against **T**otalitarianism
 
 **DISSENT** is not just a project — it's a digital middle finger to authoritarian regimes, invasive surveillance states, and bureaucrats pushing totalitarian legislation like the EU's disgusting **Chat Control**.
 
-**Chat Control** is not about safety. It’s about control. It’s an Orwellian power grab masquerading as child protection — one that seeks to scan, monitor, and intercept all private communication under the false pretense of “nothing to hide, nothing to fear.”  
+**Chat Control** is not about safety. 
+It’s about control. It’s an Orwellian power grab masquerading as child protection — one that seeks to scan, monitor, and intercept all private communication under the false pretense of “nothing to hide, nothing to fear.”  
 That’s not security — that’s tyranny.
 
 DISSENT exists to dismantle these ambitions at the protocol level. It gives you what governments fear most: **liberty**.
@@ -36,5 +37,5 @@ Compliance is not freedom.
 
 ---
 
-Stay free. Stay private.  
-**Dissent. Always.**
+**Stay free. Stay private.**  
+**-DISSENT.**

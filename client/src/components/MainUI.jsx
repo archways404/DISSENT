@@ -4,13 +4,14 @@ import useAppStore from '../store';
 function MainUI() {
 	const [decryptedConfigContents, setDecryptedConfigContents] = useState(null);
 	const renderState = useAppStore((state) => state.renderState);
+	const isUnlocked = useAppStore((state) => state.isConfigUnlocked);
 
 	useEffect(() => {
 		async function runTest() {
 			try {
 				const decryptedConfig = await window.electronAPI.getDecryptedConfig();
 				console.log('decryptedConfig', decryptedConfig);
-				setDecryptedConfigContents(decryptedConfig); // keep as object
+				setDecryptedConfigContents(decryptedConfig);
 			} catch (err) {
 				console.error('Crypto test failed:', err);
 			}
@@ -23,6 +24,8 @@ function MainUI() {
 		<div className="p-4">
 			<h2 className="text-xl font-semibold mb-2">Main Application</h2>
 			<p className="mb-4 text-gray-700">Render state: {renderState}</p>
+
+			<div>Config is: {isUnlocked ? 'UNLOCKED 🔓' : 'LOCKED 🔒'}</div>
 
 			<h3 className="font-medium mb-2">CONFIG:</h3>
 

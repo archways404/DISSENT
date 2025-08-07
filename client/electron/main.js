@@ -15,6 +15,8 @@ const configPath = path.join(configDir, 'cfg.json');
 
 let inMemoryPassphrase = null;
 
+let autoLockTimer = null;
+
 function createWindow() {
 	const win = new BrowserWindow({
 		width: 1000,
@@ -38,11 +40,11 @@ ipcMain.handle('check-config', async () => {
 	return fs.existsSync(configPath);
 });
 
-// Import an existing .enc config
+// Import an existing config
 ipcMain.handle('import-config', async () => {
 	const { canceled, filePaths } = await dialog.showOpenDialog({
 		title: 'Select config.enc file',
-		filters: [{ name: 'Config Files', extensions: ['enc'] }],
+		filters: [{ name: 'Config Files', extensions: ['json'] }],
 		properties: ['openFile'],
 	});
 
@@ -100,15 +102,28 @@ ipcMain.handle('create-config-with-pass', async (event, passphrase) => {
 	}
 });
 
+ipcMain.handle('config-lock-status', async () => {
+	return inMemoryPassphrase !== null;
+});
+
 ipcMain.handle('unlock-config', async (event, passphrase) => {
 	if (!passphrase || passphrase.length < 4) {
 		throw new Error('Passphrase too short');
 	}
 
-	inMemoryPassphrase = passphrase;
-	console.log('[MEMORY] Config passphrase stored in memory.');
+	try {
+		// Attempt to decrypt with the given passphrase
+		await decryptConfig(configPath, passphrase);
 
-	return true;
+		// If successful, store in memory
+		inMemoryPassphrase = passphrase;
+		console.log('[MEMORY] Config passphrase stored in memory.');
+
+		return true;
+	} catch (err) {
+		console.error('[UNLOCK] Failed to unlock config:', err);
+		throw new Error('Incorrect passphrase');
+	}
 });
 
 ipcMain.handle('get-decrypted-config', async () => {
@@ -126,29 +141,41 @@ ipcMain.handle('get-decrypted-config', async () => {
 });
 
 ipcMain.handle('lock-config', async () => {
-	await theGreatWall();
+	await theGreatWallLocker();
 });
+
+ipcMain.handle('refresh-auto-lock', async () => {
+	if (inMemoryPassphrase !== null) {
+		scheduleAutoLock(); // default to 5 min or custom
+		console.log('[MEMORY] Auto-lock timer refreshed.');
+	}
+});
+
+function scheduleAutoLock(ms = 1 * 60 * 1000) {
+	if (autoLockTimer) clearTimeout(autoLockTimer);
+
+	if (inMemoryPassphrase !== null) {
+		autoLockTimer = setTimeout(theGreatWall, ms);
+		console.log('[MEMORY] Auto-lock timer started/reset.');
+	}
+}
 
 async function theGreatWall() {
 	if (inMemoryPassphrase) {
 		const overwrite = 'x'.repeat(inMemoryPassphrase.length);
-		inMemoryPassphrase = overwrite; // overwrite old value
+		inMemoryPassphrase = overwrite;
 	}
 	inMemoryPassphrase = null;
 
 	global.gc?.();
 	console.log('[MEMORY] Config passphrase cleared from memory.');
-}
 
-/*
-let autoLockTimer = null;
-
-function scheduleAutoLock(ms = 5 * 60 * 1000) {
-	// 5 minutes
-	if (autoLockTimer) clearTimeout(autoLockTimer);
-	autoLockTimer = setTimeout(theGreatWall, ms);
+	// Notify renderer(s)
+	const allWindows = BrowserWindow.getAllWindows();
+	for (const win of allWindows) {
+		win.webContents.send('config-locked');
+	}
 }
-*/
 
 app.on('will-quit', async () => {
 	await theGreatWall();

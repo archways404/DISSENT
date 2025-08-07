@@ -2,21 +2,39 @@
 
 > **Decentralized Infrastructure for Secure Speech and Encryption Network against Totalitarianism**
 
-**DISSENT** is a privacy-first, decentralized communication project built to resist government overreach, censorship, and mass surveillance — especially efforts like the EU's proposed **Chat Control** legislation.
+**DISSENT** is not just a project — it's a digital middle finger to authoritarian regimes, invasive surveillance states, and bureaucrats pushing totalitarian legislation like the EU's disgusting **Chat Control**.
 
-It provides a secure, end-to-end encrypted environment for speech, data, and collaboration — without backdoors, central authorities, or compromises.
+**Chat Control** is not about safety. It’s about control. It’s an Orwellian power grab masquerading as child protection — one that seeks to scan, monitor, and intercept all private communication under the false pretense of “nothing to hide, nothing to fear.”  
+That’s not security — that’s tyranny.
 
-> **Privacy is not optional. It is a human right. DISSENT defends it.**
+DISSENT exists to dismantle these ambitions at the protocol level. It gives you what governments fear most: **liberty**.
+
+No compromises. No backdoors. No masters.
+
+> **Privacy is not optional. It is a human right — not a permission slip granted by the state. No government has the moral authority to decide who deserves privacy.**
 
 ---
 
 ### Why DISSENT?
--  No centralized control
--  End-to-end encrypted by default
--  Federated / peer-to-peer communication
--  Built to withstand surveillance legislation and forced backdoors
--  Freedom of expression preserved at the protocol level
+
+- **Reject centralized control.**
+- **End-to-end encryption by default.**
+- **Federated & peer-to-peer communication.**
+- **Impenetrable by design — resistant to backdoors and mass surveillance.**
+- **Freedom of expression hardcoded.**
+- **Built to oppose Chat Control and every cowardly regime that supports it.**
 
 ---
 
-Stay free. Stay private. **DISSENT.**
+### "Nothing to hide, nothing to fear" is the mantra of fools.
+
+If you’re fine being watched, recorded, scanned, and profiled — that’s your choice. But **no one** gets to make that choice for everyone else.
+
+Surveillance is not safety.  
+Silence is not peace.  
+Compliance is not freedom.
+
+---
+
+Stay free. Stay private.  
+**Dissent. Always.**

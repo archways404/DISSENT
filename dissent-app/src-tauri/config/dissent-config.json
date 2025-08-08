@@ -1,0 +1,21 @@
+{
+  "settings": {
+    "config_failed_decrypt_count": "0",
+    "config_failed_decrypt_limit": "5",
+    "config_failed_decrypt_erase": true
+  },
+  "conversations": {
+    "some_other_conversation_uuid": {
+      "seed": "conversation_seed",
+      "random-start-index": "324",
+      "random-index-increment": "33",
+      "base-delay": "5h"
+    },
+    "conversation_uuid": {
+      "seed": "conversation_seed",
+      "random-start-index": "324",
+      "random-index-increment": "33",
+      "base-delay": "2h"
+    }
+  }
+}

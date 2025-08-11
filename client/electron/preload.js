@@ -9,7 +9,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	lockConfig: () => ipcRenderer.invoke('lock-config'),
 	configLockStatus: () => ipcRenderer.invoke('config-lock-status'),
 	refreshAutoLock: () => ipcRenderer.invoke('refresh-auto-lock'),
-	onConfigLocked: (callback) => ipcRenderer.on('config-locked', callback),
-	removeConfigLocked: (callback) => ipcRenderer.removeListener('config-locked', callback),
+	onConfigLocked: (cb) => ipcRenderer.on('config-locked', cb),
+	removeConfigLocked: (cb) => ipcRenderer.removeListener('config-locked', cb),
 });
-

@@ -8,23 +8,43 @@
 It’s about control — an Orwellian power grab masquerading as child protection — one that seeks to scan, monitor, and intercept all private communication under the false pretense of “nothing to hide, nothing to fear.”  
 That’s not security — that’s tyranny.
 
-DISSENT exists to dismantle these ambitions at the protocol level. It gives you what governments fear most: **liberty**.
+**DISSENT** exists to make mass surveillance **impossible** — denying governments the tools to **violate privacy**.
 
-No compromises. No backdoors. No masters.
-
-> **Privacy is not optional. It is a human right — not a permission slip granted by the state. No government has the moral authority to decide who deserves privacy.**
+> **Privacy is not optional.**
+> **It is a human right — not a permission slip granted by the state.**
+> **No government has the moral authority to decide who deserves privacy.**
 
 ---
 
-### Why DISSENT?
+### On CSAM and Misused Justifications
+**DISSENT absolutely condemns child sexual abuse material (CSAM).**
 
-- **Reject centralized control.**
-- **End-to-end encryption by default.**
-- **Federated & peer-to-peer communication.**
-- **Impenetrable by design — resistant to backdoors and mass surveillance.**
-- **Freedom of expression hardcoded.**
-- **Built to oppose Chat Control and every cowardly regime that supports it.**
+Its existence is abhorrent and tragic, and fighting it is a moral necessity.
 
+But authoritarian mass surveillance is **NOT** the solution.
+
+- If governments cannot keep CSAM off the open internet, why should we believe they can magically eliminate it by scanning our **private devices and messages**?
+- Mass device surveillance will not stop determined criminals — it will, however, destroy privacy for everyone.
+- Every backdoor created “for safety” becomes a front door for **hackers**, **hostile governments**, and **corrupt officials**.
+
+---
+
+### What makes DISSENT unique?
+
+- **No central kill switch**
+  > Fully decentralized and federated. There’s no single company, server, or jurisdiction to pressure. Take one node down, the rest keep running.
+- **Client-side encryption only**
+  > Messages are encrypted before they leave your device, with keys that never touch a server unless you choose to share them (still encrypted end-to-end before transit). Even network operators can’t read them.
+- **Metadata resistance**
+  > Routes messages through Tor relays, obfuscates size and timing, and removes user identifiers. No accounts, no phone numbers — just conversations with no link to “who.”
+- **Message compartmentalization**
+  > Each message is independently encrypted. Cracking one reveals nothing about any others.
+- **Persistence under attack**
+  > If a server is seized, other servers retain the message. If none do, it will be resent until delivered.
+- **Open-source & auditable**
+  > Anyone can verify the code. No secret backdoors, and no way to silently add one without the world noticing.
+- **Purpose-built to break Chat Control 2.0**
+  > Unlike **[Signal](https://signal.org/)** or **[Telegram](https://telegram.org/)**, DISSENT’s architecture leaves nothing for mass-scanning legislation to grab onto. The protocol itself denies surveillance by design.
 ---
 
 ### "Nothing to hide, nothing to fear" is the mantra of fools.
@@ -63,5 +83,3 @@ Compliance is not freedom.
 
 **Stay free. Stay private.**  
 **-DISSENT.**
-
----

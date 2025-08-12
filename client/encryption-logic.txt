@@ -1,0 +1,72 @@
+Initial:
+  root_key ← HKDF(SEED)
+  chain_key_0 from root_key
+
+Message sending:
+  chain_key_1 → msg_key_1 → encrypt msg1
+  chain_key_2 → msg_key_2 → encrypt msg2
+
+DH ratchet event:
+  Generate new DH keypair
+  Exchange pubkeys
+  shared_secret = DH(priv, their_pub)
+  root_key ← HKDF(root_key || shared_secret)
+  chain_key_reset from root_key
+
+Continue:
+  chain_key_1' → msg_key_1' → encrypt next message
+
+
+
+The idea (two locks)
+
+- Lock 1 (device lock): OS keystore item (Keychain/DPAPI/TPM/Secure Enclave).
+- Lock 2 (brain lock): a key derived from the user’s passphrase (Argon2id).
+
+Master key is a key derived from both locks. Attacker needs the device and the passphrase to use anything.
+
+
+Concrete scheme
+
+1. Generate a random 32‑byte App Master Key K_app (used to wrap per‑conversation keys, etc.).
+
+2. Generate a random 32‑byte device secret K_os and store it in the OS keystore (device‑only, no sync).
+
+3. Derive passphrase key:
+K_pass = Argon2id(passphrase, salt, mem=256–512MB, iters=1–3, parallelism=1)
+
+(Store salt and Argon2 params next to your data.)
+
+4. Combine them:
+K_wrap = HKDF( K_os ⊕ K_pass, info="wrap-v1")
+
+
+5. Wrap your master key:
+K_app_wrap = AEAD_Encrypt(key=K_wrap, nonce=random(24), aad=header, plaintext=K_app)
+
+(Store only K_app_wrap, the nonce, and header. Never store K_app plaintext)
+
+
+
+On unlock/use
+1.	Get K_os from the OS keystore (this enforces device/biometric policy).
+2.	Get passphrase from user → derive K_pass with Argon2id (rate-limit attempts).
+3.	Recompute K_wrap = HKDF(K_os ⊕ K_pass, "wrap-v1").
+4.	Unwrap: K_app = AEAD_Decrypt(K_wrap, K_app_wrap, …).
+5.	Keep K_app in locked memory and zeroize when you re‑lock.
+
+
+For each message
+•	Use K_app only to wrap per‑message/record random keys Kc. (Transport still uses your Double‑Ratchet keys.)
+•	To implement expiry, delete the wrapped Kc (“cryptographic erasure”).
+
+
+
+Practical notes
+	•	Use Argon2id with big memory; store its params and salt.
+	•	Add attempt throttling and optional biometric “user‑presence” on keystore fetch.
+	•	Version everything ("wrap-v1", "store-v1") in AAD; support rotation:
+	•	To rotate passphrase: re‑derive K_pass with new pass, recompute K_wrap, and rewrap K_app.
+	•	To rotate K_os: generate new keystore secret, recompute K_wrap, rewrap K_app.
+	•	On macOS/iOS: prefer kSecAttrAccessibleWhenUnlockedThisDeviceOnly; use Secure Enclave non‑exportable keys if you want the OS to wrap K_app instead.
+	•	On Windows: DPAPI (user scope) is fine; for non‑exportable wrapping, use CNG with a TPM/Hello key.

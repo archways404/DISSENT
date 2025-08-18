@@ -43,7 +43,7 @@ But authoritarian mass surveillance is **NOT** the solution.
   > If a server is seized, other servers retain the message. If none do, it will be resent until delivered.
 - **Open-source & auditable**
   > Anyone can verify the code. No secret backdoors, and no way to silently add one without the world noticing.
-- **Purpose-built to break Chat Control 2.0**
+- **Purpose-built to preserve fundamental rights against mass surveillance legislation like Chat Control 2.0.**
   > Unlike **[Signal](https://signal.org/)** or **[Telegram](https://telegram.org/)**, DISSENT’s architecture leaves nothing for mass-scanning legislation to grab onto. The protocol itself denies surveillance by design.
 ---
 
@@ -57,6 +57,16 @@ Compliance is not freedom.
 
 ---
 
+## Principles
+
+- Privacy is a human right.  
+- Security must not depend on trust.  
+- No central authority should control communication.  
+- Openness and peer review beat secrecy.  
+- Usability matters — privacy for everyone, not just experts.
+
+---
+
 ### Roadmap
 
 > **v0.0.1 → v0.1.0 — Proof of Concept** (Current)
@@ -67,7 +77,7 @@ Compliance is not freedom.
 > **v0.1.1 → v0.2.0 — Hardened Rebuild**
 - Core components re-written in **C** or **Rust** to resist local file tampering, DMA attacks, memory scraping, and forensic analysis.
 - Reduced attack surface by removing non-essential dependencies and abstractions.
-- First real line of defense against state-level surveillance and data forensics.
+- Designed with the goal of resisting even state-level surveillance, subject to open review and community audit.
 
 > **v0.2.x+ — Growth & Optimization**
 - Performance tuning and protocol optimizations.
@@ -77,9 +87,72 @@ Compliance is not freedom.
 - New features to empower **secure**, **private**, and **unstoppable communication**.
 - Continuous security audits and hardening to stay ahead of adversaries.
 
-### TBD
+---
+
+## Contribute
+
+DISSENT is an open-source project built to defend privacy and free speech.  
+We welcome developers, researchers, activists, and anyone who believes in a free internet to join us.
+
+### Ways to Contribute
+- **Code** — Build the protocol, clients, and server implementations.  
+- **Security** — Audit code, report vulnerabilities, propose mitigations.  
+- **Research** — Explore censorship resistance, metadata protection, anonymity.  
+- **Docs & UX** — Write guides, improve onboarding, make privacy usable.  
+- **Community** — Translate, advocate, and help grow a healthy ecosystem.
+
+### How to Get Started
+1. **Star & fork** the repository.  
+2. Browse **Issues** for open tasks and **good first issues**.  
+3. Open a **draft PR** early to discuss approach and align on design.  
+4. Chat with maintainers in community channels (TBA).  
+5. Follow the **Style Guide** and **Security Guidelines** below.
+
+### Contribution Guidelines
+- Keep code clean, modular, and well-documented.  
+- Favor small, reviewable PRs over mega-changes.  
+- Tests accompany features; fuzz or property tests where applicable.  
+- Security > features. If a tradeoff is required, open an issue and discuss.  
+- No backdoors, no compromises. Ever.
 
 ---
+
+## Security
+
+If you discover a security issue, **please do not open a public issue**.  
+Email the security team at: **security@dissent.example** (PGP key TBA).  
+We’ll acknowledge receipt within 72 hours and work with you on coordinated disclosure.
+
+---
+
+## Code of Conduct
+
+Be respectful. Assume good faith. No harassment or discrimination of any kind.  
+We follow a modified Contributor Covenant. Report issues to **conduct@dissent.example**.
+
+---
+
+## Acknowledgments
+
+DISSENT stands on the shoulders of giants: work from the communities around **Tor**, **Signal**, **Matrix**, **Noise Protocol**, **libsodium**, and digital rights groups like **EDRi**, **EFF**, and **FSFE**.
+
+---
+
+## License
+
+`GPL-3.0-or-later` (proposed).  
+Why: strong copyleft to prevent closed forks inserting surveillance or telemetry.  
+(If your org needs permissive licensing for specific components, open a discussion.)
+
+---
+
+## Disclaimer
+
+Cryptography is subtle and easy to get wrong. Early versions are **experimental** and **not yet suitable for high-risk use**. Use at your own discretion until independent audits are complete.
+
+---
+
+“DISSENT is an open call. If you’re a developer, researcher, or privacy advocate — join us. Review the code, contribute, and help make censorship-resistant communication a reality.”
 
 **Stay free. Stay private.**  
 **-DISSENT.**
